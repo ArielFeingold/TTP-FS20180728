@@ -1,28 +1,42 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from './store/actions/index';
+import Header from './components/Navigation/Header'
+import Main from './components/Navigation/Main'
+import BodyBackgroundColor from 'react-body-backgroundcolor'
+
 import './App.css';
 
 class App extends Component {
+  componentDidMount() {
+    this.props.onTryAutoLogin()
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <BodyBackgroundColor backgroundColor='#f2f5fc'>
+        <div>
+          <Header isAuth={this.props.isAuthenticated}/>
+          <Main isAuth={this.props.isAuthenticated}/>
+        </div>
+      </BodyBackgroundColor>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoLogin: () => dispatch( actions.authCheckState() )
+  };
+};
+
+
+
+export default withRouter( connect( mapStateToProps, mapDispatchToProps)( App ) );
