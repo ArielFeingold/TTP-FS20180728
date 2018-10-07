@@ -7,10 +7,17 @@ export const getProtfolioStart = () => {
     };
 };
 
-export const getProtfolioSuccess = ( userStocks ) => {
+export const setUserStocks = ( userStocks ) => {
+    return {
+        type: actionTypes.SET_USER_STOCKS,
+        userStocks: userStocks
+    };
+};
+
+export const getProtfolioSuccess = ( output ) => {
     return {
         type: actionTypes.GET_PROTFOLIO_SUCCESS,
-        userStocks: userStocks
+        output: output
     };
 };
 
@@ -23,49 +30,36 @@ export const getProtfolioFail = (errors) => {
 
 export const getProtfolio = (userId) => {
   return dispatch => {
-    dispatch(getProtfolioStart())
-    const token = localStorage.getItem('token')
-    const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
-    const userId = localStorage.getItem('userId')
-    const url = `http://localhost:3001/users/${userId}`
-    let userStocks = []
-    let stocksWithPricing = []
-    let stocksString = ''
-    let batchQuery = ``
+    dispatch(getProtfolioStart());
+    const token = localStorage.getItem('token');
+    const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`};
+    const userId = localStorage.getItem('userId');
+    const url = `http://localhost:3001/users/${userId}`;
+    let stocksString = '';
+    let batchQuery = ``;
+    let output = [];
     axios.get(url, {headers: headers})
-    .then(
-      response => {
-        let arrayForString = response.data.stocks;
-        const lastStock = arrayForString.pop();
-
-        response.data.stocks.forEach(stck => {
-          userStocks.push(stck)
-        });
-
-        if(arrayForString.length > 0){
-          arrayForString.forEach( stock => {
+    .then( (response) => {
+        const stocks = response.data.stocks
+        dispatch(setUserStocks(stocks));
+        if(stocks.length > 0){
+          stocks.forEach( stock => {
             stocksString = stocksString + `${stock.symbol},`
           });
-      }
-      stocksString = stocksString + lastStock.symbol;
+      };
       batchQuery = `https://api.iextrading.com/1.0/stock/market/batch?symbols=${stocksString}&types=price,ohlc`
 
       return(axios.get(batchQuery));
     })
     .then(
       response => {
+          let item;
           const input = response.data;
-          let output = [], item, current;
           for(let symbol in input) {
             item = {};
             item.symbol = symbol;
             item.currentPrice = input[symbol]["price"];
             item.openingPrice = input[symbol]["ohlc"]["open"]["price"];
-            
-            if(typeof userStocks.find(userStocks => userStocks.symbol === item.symbol) !== 'undefined' ){
-              item.userShares = userStocks.find(userStocks => userStocks.symbol === item.symbol).user_shares;
-              item.id = userStocks.find(userStocks => userStocks.symbol === item.symbol).id;
-            }
             output.push(item);
             }
         dispatch(getProtfolioSuccess(output))

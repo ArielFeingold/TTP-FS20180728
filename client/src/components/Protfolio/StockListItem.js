@@ -11,7 +11,7 @@ class StockListItem extends React.Component {
       lineColor= "danger"
     }
     return(
-      <ListGroupItem key={this.props.key} color={lineColor}>
+      <ListGroupItem key={this.props} color={lineColor}>
         {this.props.symbol} - {this.props.userShares} Shares, Current Value: {this.props.currentPrice * this.props.userShares}
       </ListGroupItem>
     )
