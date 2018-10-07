@@ -5,6 +5,11 @@ import { Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, 
 import BodyBackgroundColor from 'react-body-backgroundcolor'
 
 class Protfolio extends Component {
+
+  componentDidMount = () => {
+    this.props.getProtfolio();
+  };
+  
   render() {
     return(
       <Container className="mt-5 ml-5 mr-5">
@@ -39,13 +44,13 @@ class Protfolio extends Component {
 
 const mapStateToProps = state => {
     return {
-
+      userStocks: state.prtfolio.userStocks
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-
+      getProtfolio: () => dispatch(actions.getProtfolio())
     };
 };
 
