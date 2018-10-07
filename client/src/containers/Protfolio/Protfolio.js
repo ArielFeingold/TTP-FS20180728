@@ -14,7 +14,7 @@ class Protfolio extends Component {
   render() {
     let userStocks = [];
     if(this.props.userStocks) {
-      userStocks = this.props.userStocks.map((stock) =>
+      userStocks = this.props.userStocks.map(stock =>
         <StockListItem
           symbol={stock.symbol}
           key={stock.id}
@@ -25,11 +25,25 @@ class Protfolio extends Component {
         )
     }
 
+    let userValue = "Not Available"
+    if(this.props.userStocks.length > 0){
+      let valueArray = [];
+      this.props.userStocks.map(stock => {
+        const num = stock.currentPrice * stock.userShares
+        valueArray.push(num)
+      })
+      if(valueArray.length = 1){
+        userValue = valueArray[0]
+      } else {
+        userValue = valueArray.reduce()
+      }
+    }
+
     return(
       <Container className="mt-5 ml-5 mr-5">
         <div className="row">
           <div className="col-md-7 mb-5">
-            <h4 className="mb-2 pl-2">Protfolio ($5324.24)</h4>
+            <h4 className="mb-2 pl-2">Protfolio {userValue}</h4>
             <ListGroup flush>
               {userStocks}
             </ListGroup>
