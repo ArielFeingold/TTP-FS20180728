@@ -3,11 +3,9 @@ import { ListGroupItem, Row } from 'reactstrap';
 
 const StockListItem = (props) => {
     let lineColor = ''
-    if(props.currentPrice >= props.openingPrice){
-      lineColor = "text-success"
-    } else {
-      lineColor= "text-danger"
-    }
+    if(props.currentPrice > props.openingPrice){ lineColor = "text-success"}
+    if(props.currentPrice === props.openingPrice) { lineColor= "text-muted" }
+    if(props.currentPrice < props.openingPrice) { lineColor= "text-danger" }
     return(
       <ListGroupItem key={props.id} className={lineColor}>
         <Row>
