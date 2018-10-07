@@ -14,6 +14,14 @@ export const getProtfolioSuccess = ( userStocks ) => {
     };
 };
 
+export const setUser = ( username, balance ) => {
+    return {
+        type: actionTypes.SET_USER,
+        username: username,
+        balance: balance
+    };
+};
+
 export const getProtfolioFail = (errors) => {
     return {
         type: actionTypes.GET_PROTFOLIO_FAIL,
@@ -34,6 +42,7 @@ export const getProtfolio = (userId) => {
     axios.get(url, {headers: headers})
     .then(
       response => {
+        dispatch(setUser(response.data.username, response.data.balance))
         let arrayForString = response.data.stocks;
         response.data.stocks.forEach(stck => {
           userStocks.push(stck)

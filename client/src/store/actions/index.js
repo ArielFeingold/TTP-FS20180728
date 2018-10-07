@@ -6,5 +6,6 @@ export {
 } from './authActions'
 
 export {
-  getProtfolio
+  getProtfolio,
+  setUser
 } from './protfolioActions'

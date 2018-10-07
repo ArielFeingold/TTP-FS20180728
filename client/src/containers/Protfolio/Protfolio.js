@@ -43,13 +43,13 @@ class Protfolio extends Component {
       <Container className="mt-5 ml-5 mr-5">
         <div className="row">
           <div className="col-md-7 mb-5">
-            <h4 className="mb-2 pl-2">Protfolio {userValue}</h4>
+            <h4 className="mb-2 pl-2">Protfolio   {userValue}</h4>
             <ListGroup flush>
               {userStocks}
             </ListGroup>
           </div>
         <div className="col-md-5">
-          <h4 className="mb-2 pl-2">Cash - $1234.24</h4>
+          <h4 className="mb-2 pl-2">Cash {this.props.balance}</h4>
         <Form >
             <FormGroup>
             <Input type="text" name="ticker" placeholder="Ticker" />
@@ -70,6 +70,7 @@ const mapStateToProps = state => {
     return {
       userStocks: state.protfolio.userStocks,
       loading: state.protfolio.loading,
+      balance: state.protfolio.balance
     };
 };
 
