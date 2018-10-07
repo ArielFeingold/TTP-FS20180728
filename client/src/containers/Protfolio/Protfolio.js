@@ -13,17 +13,17 @@ class Protfolio extends Component {
 
   render() {
     let userStocks = [];
-    // if(this.props.userStocks) {
-    //   userStocks = this.props.userStocks.map((stock) =>
-    //     <StockListItem
-    //       symbol={stock.symbol}
-    //       key={stock.id}
-    //       openingPrice={stock.openingPrice}
-    //       currentPrice={stock.currentPrice}
-    //       userShares={stock.userShares}
-    //     />
-    //     )
-    // }
+    if(this.props.userStocks) {
+      userStocks = this.props.userStocks.map((stock) =>
+        <StockListItem
+          symbol={stock.symbol}
+          key={stock.id}
+          openingPrice={stock.openingPrice}
+          currentPrice={stock.currentPrice}
+          userShares={stock.userShares}
+        />
+        )
+    }
 
     return(
       <Container className="mt-5 ml-5 mr-5">
