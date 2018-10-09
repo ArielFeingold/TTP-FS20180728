@@ -4,6 +4,7 @@ import { updateObject } from '../../shared/utility';
 const initialState = {
   username: null,
   balance: null,
+  balanceId: null,
   userStocks: [],
   loading: false,
   addStockError: null
@@ -34,7 +35,8 @@ const getProtfolioFail = ( state, action ) => {
 const setUser = ( state, action ) => {
   return updateObject( state, {
     username: action.username,
-    balance: action.balance.balance
+    balance: action.balance,
+    balanceId: action.balance.balance
   });
 }
 

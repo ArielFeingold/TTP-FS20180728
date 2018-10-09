@@ -1,3 +1,3 @@
 class BalanceSerializer < ActiveModel::Serializer
-  attributes :balance
+  attributes :id, :balance
 end

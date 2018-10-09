@@ -14,11 +14,12 @@ export const getProtfolioSuccess = ( userStocks ) => {
     };
 };
 
-export const setUser = ( username, balance ) => {
+export const setUser = ( username, balance, balanceId) => {
     return {
         type: actionTypes.SET_USER,
         username: username,
-        balance: balance
+        balance: balance,
+        balanceId: balanceId
     };
 };
 
@@ -42,8 +43,9 @@ export const getProtfolio = (userId) => {
     axios.get(url, {headers: headers})
     .then(
       response => {
-        dispatch(setUser(response.data.username, response.data.balance));
-        localStorage.setItem('balance', response.data.balance);
+        dispatch(setUser(response.data.username, response.data.balance.balance, response.data.balance.id));
+        localStorage.setItem('balance', response.data.balance.balance);
+        localStorage.setItem('balanceId', response.data.balance.id);
         let arrayForString = response.data.stocks;
         response.data.stocks.forEach(stck => {
           userStocks.push(stck)
@@ -106,14 +108,10 @@ export const getProtfolio = (userId) => {
           let newBalance = balance - total
           dispatch(addStockSuccess(newBalance))
           const token = localStorage.getItem('token')
+          const balanceId = localStorage.getItem('balanceId')
           const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
-          const userId = localStorage.getItem('userId')
-          const url = `http://localhost:3001/users/${userId}`
-          const data =
-            { user: {
-              balance: newBalance
-            }
-          }
+          const url = `http://localhost:3001/balance/${balanceId}`
+          const data = { balance: newBalance }
           return(axios.patch(url, data, {headers: headers}))
         }
       })
