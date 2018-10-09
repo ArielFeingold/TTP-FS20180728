@@ -7,5 +7,5 @@ export {
 
 export {
   getProtfolio,
-  setUser
+  addStock
 } from './protfolioActions'

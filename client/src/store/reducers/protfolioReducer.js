@@ -6,21 +6,13 @@ const initialState = {
   balance: null,
   userStocks: [],
   loading: false,
-  errors: null
+  addStockError: null
 };
 
 const getProtfolioStart = ( state, action ) => {
   return updateObject( state, {
     errors: null,
     loading: true }
-  );
-}
-
-const setUser = ( state, action ) => {
-  return updateObject( state, {
-    username: action.username,
-    balance: action.balance
-    }
   );
 }
 
@@ -39,11 +31,36 @@ const getProtfolioFail = ( state, action ) => {
   );
 }
 
+const setUser = ( state, action ) => {
+  return updateObject( state, {
+    username: action.username,
+    balance: action.balance.balance
+  });
+}
+
+const addStockSuccess = ( state, action ) => {
+  return updateObject( state, {
+    addStockError: null,
+    balance: action.newBalance
+  });
+}
+
+const addStockFail = ( state, action ) => {
+  return updateObject( state, {
+    addStockError: action.error
+    }
+  );
+}
+
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.GET_PROTFOLIO_START: return getProtfolioStart(state, action);
         case actionTypes.GET_PROTFOLIO_SUCCESS: return getProtfolioSuccess(state, action);
         case actionTypes.GET_PROTFOLIO_FAIL: return getProtfolioFail(state, action);
+
+        case actionTypes.ADD_STOCK_SUCCESS: return addStockSuccess(state, action);
+        case actionTypes.ADD_STOCK_FAIL: return addStockFail(state, action);
+
         case actionTypes.SET_USER: return setUser(state, action);
 
         default:

@@ -42,7 +42,8 @@ export const getProtfolio = (userId) => {
     axios.get(url, {headers: headers})
     .then(
       response => {
-        dispatch(setUser(response.data.username, response.data.balance))
+        dispatch(setUser(response.data.username, response.data.balance));
+        localStorage.setItem('balance', response.data.balance);
         let arrayForString = response.data.stocks;
         response.data.stocks.forEach(stck => {
           userStocks.push(stck)
@@ -53,7 +54,6 @@ export const getProtfolio = (userId) => {
           });
       }
       batchQuery = `https://api.iextrading.com/1.0/stock/market/batch?symbols=${stocksString}&types=price,ohlc`
-
       return(axios.get(batchQuery));
     })
     .then(
@@ -75,5 +75,49 @@ export const getProtfolio = (userId) => {
         dispatch(getProtfolioSuccess(output))
       })
     .catch(error => console.log(error.message))
+    }
   }
-}
+  export const addStockSuccess = (newBalance) => {
+      return {
+          type: actionTypes.ADD_STOCK_SUCCESS,
+          newBalance: newBalance
+      };
+  };
+
+  export const addStockFail = (error) => {
+      return {
+          type: actionTypes.ADD_STOCK_FAIL,
+          error: error
+      };
+  };
+
+  export const addStock = ( ticker, qty) => {
+    return dispatch => {
+      localStorage.setItem('qty', qty);
+      const url = `https://api.iextrading.com/1.0/stock/${ticker}/price`
+      axios.get(url)
+      .then( response => {
+        const qty = localStorage.getItem('qty')
+        const balance = localStorage.getItem('balance')
+        const total = response.data * qty
+        if( total > balance) {
+          dispatch(addStockFail("Insufficient Funds"))
+        } else {
+          let newBalance = balance - total
+          dispatch(addStockSuccess(newBalance))
+          const token = localStorage.getItem('token')
+          const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
+          const userId = localStorage.getItem('userId')
+          const url = `http://localhost:3001/users/${userId}`
+          const data =
+            { user: {
+              balance: newBalance
+            }
+          }
+          return(axios.patch(url, data, {headers: headers}))
+        }
+      })
+      .then(response => console.log(response.data))
+      .catch(error => dispatch(addStockFail(error.message)))
+    }
+  };

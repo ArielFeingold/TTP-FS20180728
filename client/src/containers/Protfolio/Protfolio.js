@@ -7,9 +7,29 @@ import StockListItem from '../../components/Protfolio/StockListItem'
 
 class Protfolio extends Component {
 
+  state = {
+    ticker: '',
+    qty: '',
+  }
+
   componentDidMount = () => {
     this.props.getProtfolio();
   };
+
+  handleTextChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  };
+
+  handleSubmit = ( event ) => {
+    event.preventDefault();
+    this.props.onAdd(this.state.ticker, this.state.qty)
+    this.setState({
+      ticker: '',
+      qty: ''
+    })
+  }
 
   render() {
     let userStocks = [];
@@ -50,14 +70,14 @@ class Protfolio extends Component {
           </div>
         <div className="col-md-5">
           <h4 className="mb-2 pl-2">Cash {this.props.balance}</h4>
-        <Form >
+        <Form onSubmit={this.handleSubmit}>
             <FormGroup>
-            <Input type="text" name="ticker" placeholder="Ticker" />
+            <Input type="text" name="ticker" placeholder="Ticker" value={this.state.ticker} onChange={this.handleTextChange} />
             </FormGroup>
             <FormGroup>
-            <Input type="number" name="quantity" placeholder="Qty" />
+            <Input type="number" name="qty" placeholder="Qty" value={this.state.qty} onChange={this.handleTextChange}/>
             </FormGroup>
-            <Button block>Buy</Button>
+            <Button block type="submit" value="submit">Buy</Button>
           </Form>
         </div>
       </div>
@@ -76,7 +96,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-      getProtfolio: () => dispatch(actions.getProtfolio())
+      getProtfolio: () => dispatch(actions.getProtfolio()),
+      onAdd: (ticker, qty, balance) => dispatch(actions.addStock( ticker, qty))
     };
 };
 
