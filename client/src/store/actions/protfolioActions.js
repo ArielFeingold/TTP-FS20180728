@@ -95,12 +95,16 @@ export const getProtfolio = (userId) => {
 
   export const addStock = ( ticker, qty) => {
     return dispatch => {
+      const token = localStorage.getItem('token')
+      const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
       localStorage.setItem('qty', qty);
+      localStorage.setItem('ticker', ticker);
       const url = `https://api.iextrading.com/1.0/stock/${ticker}/price`
       axios.get(url)
       .then( response => {
         const qty = localStorage.getItem('qty')
         const balance = localStorage.getItem('balance')
+        localStorage.setItem('stockPrice', response.data)
         const total = response.data * qty
         if( total > balance) {
           dispatch(addStockFail("Insufficient Funds"))
@@ -115,7 +119,23 @@ export const getProtfolio = (userId) => {
           return(axios.patch(url, data, {headers: headers}))
         }
       })
-      .then(response => console.log(response.data))
+      .then(response =>{
+        console.log(response)
+        const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
+        const token = localStorage.getItem('token')
+        const qty = localStorage.getItem('qty')
+        const userId = localStorage.getItem('userId')
+        const ticker = localStorage.getItem('ticker')
+        const stockPrice = localStorage.getItem('stockPrice')
+        const url = `http://localhost:3001//stocks`
+        const stockData = {
+                    user_id: userId,
+                    user_shares: qty,
+                    symbol: ticker,
+                    stock_price: stockPrice
+                  }
+        return(axios.post(url, stockData, {headers: headers}))
+      })
       .catch(error => dispatch(addStockFail(error.message)))
     }
   };
