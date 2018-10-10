@@ -2,7 +2,9 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
-  userTransactions: null
+  userTransactions: [],
+  loading: false,
+  errors: null
 };
 
 const getTransactionsStart = ( state, action ) => {
@@ -17,7 +19,7 @@ const getTransactionsSuccess = ( state, action ) => {
   return updateObject( state, {
     errors: null,
     loading: false,
-    userTrades: action.userTrades
+    userTransactions: action.userTransactions
    });
 }
 

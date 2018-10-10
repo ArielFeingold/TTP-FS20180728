@@ -7,10 +7,10 @@ export const getTransactionsStart = () => {
     };
 };
 
-export const getTransactionsSuccess = ( userTrades ) => {
+export const getTransactionsSuccess = ( userTransactions ) => {
     return {
         type: actionTypes.GET_TRANSACTIONS_SUCCESS,
-        userTrades: userTrades
+        userTransactions: userTransactions
     };
 };
 
@@ -23,11 +23,13 @@ export const getTransactionsFail = (errors) => {
 
 export const getTransactions = () => {
   return dispatch => {
-    dispatch(getTransactionsStart)
-    const url = `http://localhost:3001/trades`
-    axios.get(url)
-    .then(result => {
-      getTransactionsSuccess(result.data)
+    dispatch(getTransactionsStart())
+    const token = localStorage.getItem('token');
+    const url = `http://localhost:3001/trades`;
+    const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`};
+    axios.get(url, {headers: headers})
+    .then(response => {
+      dispatch(getTransactionsSuccess(response.data.trades))
     })
     .catch(error => {
     if (error.response) {
