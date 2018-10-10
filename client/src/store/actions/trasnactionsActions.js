@@ -22,5 +22,9 @@ export const getTransactionsFail = (errors) => {
 };
 
 export const getTransactions = () => {
-
+  return dispatch => {
+    dispatch(getTransactionsStart)
+    
+    axios.get()
+  }
 }

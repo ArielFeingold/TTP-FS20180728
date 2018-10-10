@@ -11,7 +11,7 @@ class StocksController < ApplicationController
     else
       stock = Stock.new(stock_params)
     end
-    trade = stock.trades.build(user_id: current_user.id, amount: params[:user_shares], price: params[:stock_price])
+    trade = stock.trades.build(user_id: current_user.id, amount: params[:user_shares], price: params[:stock_price], symbol: stock_params[:symbol])
     new_balance = (current_user.balance.balance - trade_amount)
     user.balance.balance = new_balance
       if stock.save && trade.save && user.balance.save
