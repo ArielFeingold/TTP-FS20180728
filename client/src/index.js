@@ -16,12 +16,14 @@ import * as serviceWorker from './serviceWorker';
 
 import authReducer from './store/reducers/authReducer';
 import protfolioReducer from './store/reducers/protfolioReducer';
+import transactionsReducer from './store/reducers/transactionsReducer';
 
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  protfolio: protfolioReducer
+  protfolio: protfolioReducer,
+  transactions: transactionsReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

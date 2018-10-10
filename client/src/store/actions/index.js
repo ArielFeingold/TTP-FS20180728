@@ -9,3 +9,7 @@ export {
   getProtfolio,
   addStock,
 } from './protfolioActions'
+
+export {
+  getTransactions
+} from './trasnactionsActions'
