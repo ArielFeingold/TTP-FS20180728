@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :username, :balance
+  attributes :username
   has_many :stocks
   has_one :balance
 end

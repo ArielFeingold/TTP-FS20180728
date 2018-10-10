@@ -97,7 +97,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
       getProtfolio: () => dispatch(actions.getProtfolio()),
-      onAdd: (ticker, qty, balance) => dispatch(actions.addStock( ticker, qty))
+      onAdd: (ticker, qty) => dispatch(actions.addStock( ticker, qty)),
     };
 };
 

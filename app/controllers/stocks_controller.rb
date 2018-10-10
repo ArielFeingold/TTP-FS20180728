@@ -1,17 +1,22 @@
 require 'pry-remote'
 class StocksController < ApplicationController
+  before_action :authenticate_user ,only: :create
 
   def create
-    stock = Stock.find_by(symbol: stock_params[:symbol].upcase)
-    if stock
-      stock.update({user_shares: stock.user_shares + stock_params[:user_shares].to_i})
+    user = User.find_by(id: params[:user_id])
+    trade_amount = stock_params[:user_shares].to_i * stock_params[:stock_price].to_i
+    stock = Stock.find_by(symbol: stock_params[:symbol], user_id: params[:user_id])
+    if stock != nil
+      stock.user_shares = stock.user_shares + stock_params[:user_shares].to_i
     else
       stock = Stock.new(stock_params)
     end
-      trade_amount = stock_params[:user_shares].to_i * stock_params[:stock_price].to_i
-      trade = stock.trades.build(user_id: current_user.id, amount: trade_amount, price: stock_params[:stock_price])
       if stock.save && trade.save
-        render status: 200, json: {message: "Trade Successful"}
+        trade = stock.trades.build(user_id: current_user.id, amount: trade_amount, price: stock_params[:stock_price])
+        new_balance = (current_user.balance.balance - trade_amount)
+        user.balance = new_balance
+        user.save
+        render status: 200, json: {stocks: user.stocks, balance: user.balance}
       else
         render status: 400, json: {error: "Something went wrong"}
       end

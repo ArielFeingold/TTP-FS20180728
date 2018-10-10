@@ -17,16 +17,6 @@ class UsersController < ApplicationController
     render status: 200, json: user
   end
 
-  def update
-    binding.remote_pry
-    user = User.find_by(id: params[:id])
-    if user.update(user_params)
-      render status: 200, json: {message: "Update Successful"}
-    else
-      render status: 400, json: {error: "Something went wrong"}
-    end
-  end
-
   private
 
   def user_params

@@ -30,112 +30,117 @@ export const getProtfolioFail = (errors) => {
     };
 };
 
-export const getProtfolio = (userId) => {
+export const combineIEX = (output) => {
+    return {
+        type: actionTypes.GET_PROTFOLIO_FAIL,
+        output: output
+    };
+};
+
+export const getProtfolio = () => {
   return dispatch => {
-    dispatch(getProtfolioStart())
-    const token = localStorage.getItem('token')
-    const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
-    const userId = localStorage.getItem('userId')
-    const url = `http://localhost:3001/users/${userId}`
-    let userStocks = []
-    let stocksString = ''
-    let batchQuery = ``
-    axios.get(url, {headers: headers})
-    .then(
-      response => {
-        dispatch(setUser(response.data.username, response.data.balance.balance, response.data.balance.id));
-        localStorage.setItem('balance', response.data.balance.balance);
-        localStorage.setItem('balanceId', response.data.balance.id);
-        let arrayForString = response.data.stocks;
-        response.data.stocks.forEach(stck => {
-          userStocks.push(stck)
+    dispatch(getProtfolioStart());
+    getUserData()
+    .then(response => {
+      const data = response.data;
+      let stocksString = '';
+      let batchQuery = ``;
+      localStorage.setItem('balance', data.balance.balance);
+      localStorage.setItem('balanceId', data.balance.id);
+      dispatch(setUser(data.username, data.balance.balance, data.balance.id));
+      if(data.stocks.length > 0){
+        data.stocks.forEach( stock => {
+          stocksString = stocksString + `${stock.symbol},`
         });
-        if(arrayForString.length > 0){
-          arrayForString.forEach( stock => {
-            stocksString = stocksString + `${stock.symbol},`
-          });
+      } else {
+        dispatch(getProtfolioFail("No Stocks in Protfolio"))
       }
-      batchQuery = `https://api.iextrading.com/1.0/stock/market/batch?symbols=${stocksString}&types=price,ohlc`
-      return(axios.get(batchQuery));
+      batchQuery = `https://api.iextrading.com/1.0/stock/market/batch?symbols=${stocksString}&types=price,ohlc`;
+      return (batchQuery)
     })
-    .then(
-      response => {
-          const input = response.data;
-          let output = [], item, current;
-          for(let symbol in input) {
-            item = {};
-            item.symbol = symbol;
-            item.currentPrice = input[symbol]["price"];
-            item.openingPrice = input[symbol]["ohlc"]["open"]["price"];
-
-            if(typeof userStocks.find(userStocks => userStocks.symbol === item.symbol) !== 'undefined' ){
-              item.userShares = userStocks.find(userStocks => userStocks.symbol === item.symbol).user_shares;
-              item.id = userStocks.find(userStocks => userStocks.symbol === item.symbol).id;
-            }
-            output.push(item);
-            }
+    .catch(err => console.log(err) )
+    .then(data => {
+      return(axios.all([getUserData(), getMarketData(data)]))
+      .then(axios.spread(function (user, market) {
+        const userStocks = user.data.stocks
+        const marketStocks = market.data
+        let output = [], item, relevantStock;
+         for(let symbol in marketStocks) {
+           item = { id: '', symbol: '', currentPrice: '', openingPrice: '', userShares: '' };
+           item.symbol = symbol;
+           item.currentPrice = marketStocks[symbol]["price"];
+           item.openingPrice = marketStocks[symbol]["ohlc"]["open"]["price"];
+           relevantStock = userStocks.find(stock => stock.symbol.toLowerCase() === item.symbol.toLowerCase());
+           item.userShares = relevantStock.user_shares;
+           item.id = relevantStock.id;
+           output.push(item);
+           }
         dispatch(getProtfolioSuccess(output))
-      })
-    .catch(error => console.log(error.message))
+      }))
     }
-  }
-  export const addStockSuccess = (newBalance) => {
-      return {
-          type: actionTypes.ADD_STOCK_SUCCESS,
-          newBalance: newBalance
-      };
-  };
+  )}
+}
 
-  export const addStockFail = (error) => {
-      return {
-          type: actionTypes.ADD_STOCK_FAIL,
-          error: error
-      };
-  };
+function getUserData() {
+  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId')
+  const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
+  const url = `http://localhost:3001/users/${userId}`
+  return axios.get(url, {headers: headers});
+}
 
-  export const addStock = ( ticker, qty) => {
-    return dispatch => {
-      const token = localStorage.getItem('token')
-      const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
-      localStorage.setItem('qty', qty);
-      localStorage.setItem('ticker', ticker);
-      const url = `https://api.iextrading.com/1.0/stock/${ticker}/price`
-      axios.get(url)
-      .then( response => {
-        const qty = localStorage.getItem('qty')
-        const balance = localStorage.getItem('balance')
-        localStorage.setItem('stockPrice', response.data)
-        const total = response.data * qty
-        if( total > balance) {
-          dispatch(addStockFail("Insufficient Funds"))
-        } else {
-          let newBalance = balance - total
-          dispatch(addStockSuccess(newBalance))
-          const token = localStorage.getItem('token')
-          const balanceId = localStorage.getItem('balanceId')
-          const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
-          const url = `http://localhost:3001/balance/${balanceId}`
-          const data = { balance: newBalance }
-          return(axios.patch(url, data, {headers: headers}))
-        }
-      })
-      .then(response =>{
-        console.log(response)
-        const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
+function getMarketData(url) {
+  return axios.get(url);
+}
+
+export const addStockSuccess = (newBalance) => {
+    return {
+        type: actionTypes.ADD_STOCK_SUCCESS,
+        newBalance: newBalance
+    };
+};
+
+export const addStockFail = (error) => {
+    return {
+        type: actionTypes.ADD_STOCK_FAIL,
+        error: error
+    };
+};
+
+export const addStock = ( ticker, qty) => {
+  return dispatch => {
+    const lowTicker = ticker.toLowerCase()
+    localStorage.setItem('qty', qty);
+    localStorage.setItem('ticker', lowTicker);
+    const url = `https://api.iextrading.com/1.0/stock/${ticker}/price`
+    axios.get(url)
+    .catch(error => console.log(error))
+    .then( response => {
+      const price = response.data
+      localStorage.setItem('stock_price', price);
+      const qty = localStorage.getItem('qty')
+      const userId = localStorage.getItem('userId')
+      const ticker = localStorage.getItem('ticker')
+      const balance = localStorage.getItem('balance')
+      const total = response.data * qty
+      if( total > balance) {
+        dispatch(addStockFail("Insufficient Funds"))
+      } else {
         const token = localStorage.getItem('token')
-        const qty = localStorage.getItem('qty')
-        const userId = localStorage.getItem('userId')
-        const ticker = localStorage.getItem('ticker')
-        const stockPrice = localStorage.getItem('stockPrice')
-        const url = `http://localhost:3001//stocks`
+        const headers = {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`}
+        const url = `http://localhost:3001/stocks`
         const stockData = {
                     user_id: userId,
                     user_shares: qty,
                     symbol: ticker,
-                    stock_price: stockPrice
+                    stock_price: localStorage.getItem('stock_price')
                   }
         return(axios.post(url, stockData, {headers: headers}))
-      })
-      .catch(error => dispatch(addStockFail(error.message)))
-    }
-  };
+      }
+    })
+    .then( response => {
+      console.log(response)
+    })
+    .catch(error => dispatch(addStockFail(error.message)))
+  }
+};

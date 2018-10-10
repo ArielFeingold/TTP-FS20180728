@@ -7,7 +7,7 @@ const initialState = {
   balanceId: null,
   userStocks: [],
   loading: false,
-  addStockError: null
+  addStockError: null,
 };
 
 const getProtfolioStart = ( state, action ) => {
@@ -16,6 +16,7 @@ const getProtfolioStart = ( state, action ) => {
     loading: true }
   );
 }
+
 
 const getProtfolioSuccess = ( state, action ) => {
   return updateObject( state, {
@@ -43,13 +44,20 @@ const setUser = ( state, action ) => {
 const addStockSuccess = ( state, action ) => {
   return updateObject( state, {
     addStockError: null,
-    balance: action.newBalance
+    balance: action.balance,
   });
 }
 
 const addStockFail = ( state, action ) => {
   return updateObject( state, {
     addStockError: action.error
+    }
+  );
+}
+
+const refreshToggle = ( state, action ) => {
+  return updateObject( state, {
+    refresh: action.refresh
     }
   );
 }
