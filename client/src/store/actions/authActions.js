@@ -12,6 +12,7 @@ export const signupSuccess = (userId) => {
     return {
         type: actionTypes.SIGNUP_SUCCESS,
         userId: userId,
+        signupError: null
     };
 };
 
