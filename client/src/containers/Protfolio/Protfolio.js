@@ -60,16 +60,11 @@ class Protfolio extends Component {
 
     let userValue = "Has No Stocks"
     if(this.props.userStocks.length > 0){
-      let valueArray = [];
-      this.props.userStocks.map(stock => {
-        const num = stock.currentPrice * stock.userShares
-        valueArray.push(num)
+      let array = this.props.userStocks, sum = 0;
+      array.forEach(stock => {
+        sum = sum + (stock.currentPrice * stock.userShares)
       })
-      if(valueArray.length = 1){
-        userValue = valueArray[0]
-      } else {
-        userValue = valueArray.reduce()
-      }
+      userValue = sum
     }
 
     return(
