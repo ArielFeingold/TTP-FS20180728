@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
+import Spinner from '../../components/UI/Spinner'
 
 const initialState = {
   username: null,
@@ -13,8 +14,8 @@ const initialState = {
 const getProtfolioStart = ( state, action ) => {
   return updateObject( state, {
     errors: null,
-    loading: true }
-  );
+    loading: true
+  });
 }
 
 
@@ -23,13 +24,14 @@ const getProtfolioSuccess = ( state, action ) => {
     errors: null,
     loading: false,
     userStocks: action.userStocks
-   } );
+   });
 }
 
 const getProtfolioFail = ( state, action ) => {
   return updateObject( state, {
     errors: action.errors,
-    loading: false }
+    loading: false
+    }
   );
 }
 
@@ -41,16 +43,25 @@ const setUser = ( state, action ) => {
   });
 }
 
+const addStockStart = ( state, action ) => {
+  return updateObject( state, {
+    addStockError: null,
+    loading: true,
+  });
+}
+
 const addStockSuccess = ( state, action ) => {
   return updateObject( state, {
     addStockError: null,
     balance: action.balance,
+    loading: false
   });
 }
 
 const addStockFail = ( state, action ) => {
   return updateObject( state, {
-    addStockError: action.error
+    addStockError: action.error,
+    loading: false
     }
   );
 }
@@ -68,6 +79,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.GET_PROTFOLIO_SUCCESS: return getProtfolioSuccess(state, action);
         case actionTypes.GET_PROTFOLIO_FAIL: return getProtfolioFail(state, action);
 
+        case actionTypes.ADD_STOCK_START: return addStockStart(state, action);
         case actionTypes.ADD_STOCK_SUCCESS: return addStockSuccess(state, action);
         case actionTypes.ADD_STOCK_FAIL: return addStockFail(state, action);
 

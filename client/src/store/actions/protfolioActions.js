@@ -14,15 +14,6 @@ export const getProtfolioSuccess = ( userStocks ) => {
     };
 };
 
-export const setUser = ( username, balance, balanceId) => {
-    return {
-        type: actionTypes.SET_USER,
-        username: username,
-        balance: balance,
-        balanceId: balanceId
-    };
-};
-
 export const getProtfolioFail = (errors) => {
     return {
         type: actionTypes.GET_PROTFOLIO_FAIL,
@@ -74,6 +65,15 @@ export const getProtfolio = () => {
   )}
 }
 
+export const setUser = ( username, balance, balanceId) => {
+    return {
+        type: actionTypes.SET_USER,
+        username: username,
+        balance: balance,
+        balanceId: balanceId
+    };
+};
+
 function getUserData() {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId')
@@ -86,13 +86,19 @@ function getMarketData(url) {
   return axios.get(url);
 }
 
-export const addStockSuccess = (newBalance) => {
+export const addStockStart = () => {
+    return {
+        type: actionTypes.ADD_STOCK_START
+    };
+};
+
+export const addStockSuccess = () => {
   localStorage.removeItem('qty');
   localStorage.removeItem('stock_price');
   localStorage.removeItem('ticker');
   return {
       type: actionTypes.ADD_STOCK_SUCCESS,
-      newBalance: newBalance
+      loading: false
   };
 };
 
@@ -105,6 +111,7 @@ export const addStockFail = (error) => {
 
 export const addStock = ( ticker, qty) => {
   return dispatch => {
+    dispatch(addStockStart())
     const lowTicker = ticker.toLowerCase()
     localStorage.setItem('qty', qty);
     localStorage.setItem('ticker', lowTicker);
@@ -135,7 +142,8 @@ export const addStock = ( ticker, qty) => {
       }
     })
     .then( response => {
-      console.log(response)
+      dispatch(addStockSuccess())
+      dispatch(getProtfolio())
     })
     .catch(error => dispatch(addStockFail(error.message)))
   }

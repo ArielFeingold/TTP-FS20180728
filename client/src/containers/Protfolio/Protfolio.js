@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-import { Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
+import { Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 import BodyBackgroundColor from 'react-body-backgroundcolor'
 import StockListItem from '../../components/Protfolio/StockListItem'
+import Spinner from '../../components/UI/Spinner'
 
 class Protfolio extends Component {
 
   state = {
     ticker: '',
     qty: '',
+    modal: false
   }
 
   componentDidMount = () => {
@@ -32,6 +34,9 @@ class Protfolio extends Component {
   }
 
   render() {
+    let spinner = null;
+    if ( this.props.loading ) {spinner = <Spinner />}
+
     let userStocks = [];
     if(this.props.userStocks) {
       userStocks = this.props.userStocks.map(stock =>
