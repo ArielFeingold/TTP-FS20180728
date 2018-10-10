@@ -128,7 +128,7 @@ export const addStock = ( ticker, qty) => {
       const ticker = localStorage.getItem('ticker')
       const balance = localStorage.getItem('balance')
       const total = response.data * qty
-      if( total > balance) {
+      if( total > balance ) {
         console.log("no funds")
         dispatch(addStockFail("Insufficient Funds"))
       } else {

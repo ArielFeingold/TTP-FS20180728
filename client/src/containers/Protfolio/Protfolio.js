@@ -84,7 +84,7 @@ class Protfolio extends Component {
             <Input type="text" name="ticker" placeholder="Ticker" value={this.state.ticker} onChange={this.handleTextChange} />
             </FormGroup>
             <FormGroup>
-            <Input type="number" name="qty" placeholder="Qty" value={this.state.qty} onChange={this.handleTextChange}/>
+            <Input type="number" min="0" step="1" name="qty" placeholder="Qty" value={this.state.qty} onChange={this.handleTextChange}/>
             </FormGroup>
             <Button block type="submit" value="submit">Buy</Button>
           </Form>
