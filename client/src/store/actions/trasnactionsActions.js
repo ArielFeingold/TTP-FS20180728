@@ -24,7 +24,20 @@ export const getTransactionsFail = (errors) => {
 export const getTransactions = () => {
   return dispatch => {
     dispatch(getTransactionsStart)
-    
-    axios.get()
+    const url = `http://localhost:3001/trades`
+    axios.get(url)
+    .then(result => {
+      getTransactionsSuccess(result.data)
+    })
+    .catch(error => {
+    if (error.response) {
+      dispatch(getTransactionsFail(error.response.data));
+    } else if (error.request) {
+      dispatch(getTransactionsFail("Could Not Connect To Server"));
+    } else {
+      console.log('Error', error.message);
+    }
+    console.log(error.config);
+  })
   }
 }
