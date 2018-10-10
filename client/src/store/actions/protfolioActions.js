@@ -103,6 +103,9 @@ export const addStockSuccess = () => {
 };
 
 export const addStockFail = (error) => {
+  localStorage.removeItem('qty');
+  localStorage.removeItem('stock_price');
+  localStorage.removeItem('ticker');
     return {
         type: actionTypes.ADD_STOCK_FAIL,
         error: error
@@ -117,7 +120,6 @@ export const addStock = ( ticker, qty) => {
     localStorage.setItem('ticker', lowTicker);
     const url = `https://api.iextrading.com/1.0/stock/${ticker}/price`
     axios.get(url)
-    .catch(error => console.log(error))
     .then( response => {
       const price = response.data
       localStorage.setItem('stock_price', price);
@@ -127,6 +129,7 @@ export const addStock = ( ticker, qty) => {
       const balance = localStorage.getItem('balance')
       const total = response.data * qty
       if( total > balance) {
+        console.log("no funds")
         dispatch(addStockFail("Insufficient Funds"))
       } else {
         const token = localStorage.getItem('token')
@@ -141,10 +144,16 @@ export const addStock = ( ticker, qty) => {
         return(axios.post(url, stockData, {headers: headers}))
       }
     })
-    .then( response => {
-      dispatch(addStockSuccess())
-      dispatch(getProtfolio())
-    })
-    .catch(error => dispatch(addStockFail(error.message)))
+    .then( response => { dispatch(getProtfolio())})
+    .catch(error => {
+    if (error.response) {
+      dispatch(addStockFail(error.response.data));
+    } else if (error.request) {
+      dispatch(addStockFail("Could Not Connect To Server"));
+    } else {
+      console.log('Error', error.message);
+    }
+    console.log(error.config);
+  });
   }
 };

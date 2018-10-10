@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-import { Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import { Alert, Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
 import BodyBackgroundColor from 'react-body-backgroundcolor'
 import StockListItem from '../../components/Protfolio/StockListItem'
 import Spinner from '../../components/UI/Spinner'
@@ -37,6 +37,14 @@ class Protfolio extends Component {
     let spinner = null;
     if ( this.props.loading ) {spinner = <Spinner />}
 
+    let errorMessage = null;
+    if(this.props.addStockError !== null){
+      errorMessage =
+      <Alert color="danger">
+        {this.props.addStockError}
+      </Alert>
+    }
+
     let userStocks = [];
     if(this.props.userStocks) {
       userStocks = this.props.userStocks.map(stock =>
@@ -50,7 +58,7 @@ class Protfolio extends Component {
         )
     }
 
-    let userValue = "Not Available"
+    let userValue = "Has No Stocks"
     if(this.props.userStocks.length > 0){
       let valueArray = [];
       this.props.userStocks.map(stock => {
@@ -75,6 +83,7 @@ class Protfolio extends Component {
           </div>
         <div className="col-md-5">
           <h4 className="mb-2 pl-2">Cash {this.props.balance}</h4>
+          {errorMessage}
         <Form onSubmit={this.handleSubmit}>
             <FormGroup>
             <Input type="text" name="ticker" placeholder="Ticker" value={this.state.ticker} onChange={this.handleTextChange} />
@@ -95,7 +104,8 @@ const mapStateToProps = state => {
     return {
       userStocks: state.protfolio.userStocks,
       loading: state.protfolio.loading,
-      balance: state.protfolio.balance
+      balance: state.protfolio.balance,
+      addStockError: state.protfolio.addStockError
     };
 };
 
