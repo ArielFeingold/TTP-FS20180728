@@ -5,6 +5,7 @@ import Login from '../../containers/auth/Login'
 import Signup from '../../containers/auth/Signup'
 import Logout from '../../containers/auth/Logout'
 import Protfolio from '../../containers/Protfolio/Protfolio'
+import Transactions from '../../containers/Transactions/Transactions'
 
 
 const Main = () => (
@@ -14,6 +15,7 @@ const Main = () => (
       <Route path='/signup' exact component={Signup}/>
       <Route path="/logout" exact component={Logout} />
       <Route path="/protfolio" exact component={Protfolio} />
+      <Route path="/transactions" exact component={Transactions} />
       <Route path='/' exact component={Login}/>
       <Redirect to="/" />
     </Switch>
