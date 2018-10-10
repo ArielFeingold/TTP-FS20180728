@@ -64,7 +64,8 @@ class Protfolio extends Component {
       array.forEach(stock => {
         sum = sum + (stock.currentPrice * stock.userShares)
       })
-      userValue = sum
+      // userValue = Math.round(sum * 100) / 100
+      userValue = sum.toFixed(3)
     }
 
     return(

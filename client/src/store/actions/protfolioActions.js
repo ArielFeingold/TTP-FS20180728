@@ -29,7 +29,7 @@ export const getProtfolio = () => {
       const data = response.data;
       let stocksString = '';
       let batchQuery = ``;
-      localStorage.setItem('balance', data.balance.balance);
+      localStorage.setItem('balance', data.balance.balance.toFixed(2));
       localStorage.setItem('balanceId', data.balance.id);
       dispatch(setUser(data.username, data.balance.balance, data.balance.id));
       if(data.stocks.length > 0){
@@ -69,7 +69,7 @@ export const setUser = ( username, balance, balanceId) => {
     return {
         type: actionTypes.SET_USER,
         username: username,
-        balance: balance,
+        balance: balance.toFixed(2),
         balanceId: balanceId
     };
 };

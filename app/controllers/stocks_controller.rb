@@ -4,7 +4,7 @@ class StocksController < ApplicationController
 
   def create
     user = User.find_by(id: params[:user_id])
-    trade_amount = params[:user_shares].to_i * params[:stock_price].to_i
+    trade_amount = params[:user_shares].to_i * params[:stock_price].to_f
     stock = Stock.find_by(symbol: stock_params[:symbol], user_id: params[:user_id])
     if stock != nil
       stock.user_shares = stock.user_shares + stock_params[:user_shares].to_i
