@@ -100,7 +100,7 @@ export const logout = () => {
     localStorage.removeItem('balance');
     localStorage.removeItem('balanceId');
     localStorage.removeItem('qty');
-    localStorage.removeItem('stockPrice');
+    localStorage.removeItem('stock_price');
     localStorage.removeItem('ticker');
     return {
         type: actionTypes.LOGOUT

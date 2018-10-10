@@ -30,13 +30,6 @@ export const getProtfolioFail = (errors) => {
     };
 };
 
-export const combineIEX = (output) => {
-    return {
-        type: actionTypes.GET_PROTFOLIO_FAIL,
-        output: output
-    };
-};
-
 export const getProtfolio = () => {
   return dispatch => {
     dispatch(getProtfolioStart());
@@ -94,10 +87,13 @@ function getMarketData(url) {
 }
 
 export const addStockSuccess = (newBalance) => {
-    return {
-        type: actionTypes.ADD_STOCK_SUCCESS,
-        newBalance: newBalance
-    };
+  localStorage.removeItem('qty');
+  localStorage.removeItem('stock_price');
+  localStorage.removeItem('ticker');
+  return {
+      type: actionTypes.ADD_STOCK_SUCCESS,
+      newBalance: newBalance
+  };
 };
 
 export const addStockFail = (error) => {
