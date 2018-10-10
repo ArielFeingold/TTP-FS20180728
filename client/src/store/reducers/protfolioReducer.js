@@ -1,6 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utility';
-import Spinner from '../../components/UI/Spinner'
 
 const initialState = {
   username: null,
