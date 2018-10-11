@@ -31,6 +31,7 @@ class Transactions extends Component {
     return(
       <Container className="mt-5 ml-5 mr-5">
         {authRedirect}
+        {spinner}
         <h1>Transactions</h1>
         <ListGroup>
           {userTransactions}

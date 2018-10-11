@@ -74,8 +74,9 @@ class Protfolio extends Component {
     }
 
     return(
-      <Container className="clearfix mt-5 ml-5 mr-5 ">
+      <Container className="mt-5 ml-5 mr-5 ">
         {authRedirect}
+        {spinner}
         <div className="row">
           <div className="col-md-7 mb-5">
             <h4 className="mb-2 pl-2">Protfolio   {userValue}</h4>
