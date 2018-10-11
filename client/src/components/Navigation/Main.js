@@ -6,6 +6,7 @@ import Signup from '../../containers/auth/Signup'
 import Logout from '../../containers/auth/Logout'
 import Protfolio from '../../containers/Protfolio/Protfolio'
 import Transactions from '../../containers/Transactions/Transactions'
+import NoAccess from './NoAccess'
 
 
 const Main = () => (
@@ -16,6 +17,7 @@ const Main = () => (
       <Route path="/logout" exact component={Logout} />
       <Route path="/protfolio" exact component={Protfolio} />
       <Route path="/transactions" exact component={Transactions} />
+      <Route path="/no-access" exact component={NoAccess} />
       <Route path='/' exact component={Login}/>
       <Redirect to="/" />
     </Switch>

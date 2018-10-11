@@ -5,6 +5,7 @@ import { Alert, Container, Button, Form, FormGroup, Label, Input, FormText, List
 import BodyBackgroundColor from 'react-body-backgroundcolor'
 import StockListItem from '../../components/Protfolio/StockListItem'
 import Spinner from '../../components/UI/Spinner'
+import { Redirect } from 'react-router-dom';
 
 class Protfolio extends Component {
 
@@ -64,12 +65,17 @@ class Protfolio extends Component {
       array.forEach(stock => {
         sum = sum + (stock.currentPrice * stock.userShares)
       })
-      // userValue = Math.round(sum * 100) / 100
-      userValue = sum.toFixed(3)
+      userValue = sum.toFixed(2)
+    }
+
+    let authRedirect = null;
+    if ( !this.props.isAuthenticated ) {
+        authRedirect = <Redirect to="/no-access" />
     }
 
     return(
-      <Container className="mt-5 ml-5 mr-5">
+      <Container className="clearfix mt-5 ml-5 mr-5 ">
+        {authRedirect}
         <div className="row">
           <div className="col-md-7 mb-5">
             <h4 className="mb-2 pl-2">Protfolio   {userValue}</h4>
@@ -101,7 +107,8 @@ const mapStateToProps = state => {
       userStocks: state.protfolio.userStocks,
       loading: state.protfolio.loading,
       balance: state.protfolio.balance,
-      addStockError: state.protfolio.addStockError
+      addStockError: state.protfolio.addStockError,
+      isAuthenticated: state.auth.token !== null
     };
 };
 

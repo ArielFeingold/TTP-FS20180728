@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import { Container, ListGroup, ListGroupItem } from 'reactstrap';
 import Spinner from '../../components/UI/Spinner'
+import { Redirect } from 'react-router-dom';
 
 class Transactions extends Component {
 
@@ -22,8 +23,14 @@ class Transactions extends Component {
         )
     }
 
+    let authRedirect = null;
+    if ( !this.props.isAuthenticated ) {
+        authRedirect = <Redirect to="/no-access" />
+    }
+
     return(
       <Container className="mt-5 ml-5 mr-5">
+        {authRedirect}
         <h1>Transactions</h1>
         <ListGroup>
           {userTransactions}
@@ -35,7 +42,8 @@ class Transactions extends Component {
 
 const mapStateToProps = state => {
     return {
-      userTransactions: state.transactions.userTransactions
+      userTransactions: state.transactions.userTransactions,
+      isAuthenticated: state.auth.token !== null
     };
 };
 
