@@ -65,6 +65,13 @@ const addStockFail = ( state, action ) => {
   );
 }
 
+const refreshToggle = ( state, action ) => {
+  return updateObject( state, {
+    refresh: action.refresh
+    }
+  );
+}
+
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.GET_PROTFOLIO_START: return getProtfolioStart(state, action);

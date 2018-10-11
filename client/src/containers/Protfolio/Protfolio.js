@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
-import { Alert, Container, Button, Form, FormGroup, Input, ListGroup } from 'reactstrap';
+import { Alert, Container, Button, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
+import BodyBackgroundColor from 'react-body-backgroundcolor'
 import StockListItem from '../../components/Protfolio/StockListItem'
 import Spinner from '../../components/UI/Spinner'
 import { Redirect } from 'react-router-dom';
